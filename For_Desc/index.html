@@ -214,6 +214,23 @@
       }
     }
   </style>
+
+    <style>
+  /* Mobile & Tablet background override */
+  @media (max-width: 1024px) {
+    .catalog-app {
+      background-image: url('../global assets/icons/background-mobile-img.webp') !important;
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+    }
+     body{
+      background-image: url('../global assets/icons/background-mobile-img.webp') !important;
+    }
+  }
+
+
+</style>
 </head>
 
 <body>
@@ -450,7 +467,7 @@
           <li class="tb-link cursor-pointer" data-page="8"><a
               class="w-full h-[6vw] flex flex-col items-center justify-center"> <img
                 src="../global-assets/thumbnail-images/page-8.webp" class="h-full w-auto mx-auto" />
-              <p class="text-[.6vw] text-center mt-[.2vw]">page 8-9</p>
+              <p class="text-[.6vw] text-center mt-[.2vw]">page 8</p>
             </a></li>
 
         </ul>
@@ -689,10 +706,10 @@
               class="absolute w-[55%] top-[15%] left-[22.5%] popup_image" />
             <img src="../global-assets/pages/page-5/text.svg" alt="text"
               class="absolute w-[80%] bottom-[7%] left-[0%]" />
-            <a href="../lightBox/index.html#DTD-model" target="_blank"> <img
+            <a href="../lightBox/index.html#SDTD-model" target="_blank"> <img
                 src="../global-assets/pages/page-5/360-icon.webp" alt="product-img"
                 class="absolute w-[20%] top-[15%] left-[15%] " /></a>
-            <img src="../global-assets/pages/page-5/play-icon.webp" alt="text"
+            <a href="https://youtu.be/z-HDbngYlF8?si=Ig4ZEPGIqZIYiLfp" target="_blank"> <img src="../global-assets/pages/page-5/play-icon.webp" alt="text"
               class="absolute w-[20%] top-[50%] right-[8%] cursor-pointer" />
             <img src="../global-assets/pages/page-5/04.svg" alt="03" class="absolute w-[4%] bottom-[1%] left-[47.5%]" />
             <img src="../global-assets/pages/right-page-shadow.svg" alt="shadow"
@@ -1447,37 +1464,40 @@
 
 
 
-  <script>
-    $(document).ready(function () {
-      var isMobile = $(window).width() < 768;
+<script>
+  $(document).ready(function () {
+    var isMobile = $(window).width() < 768;
 
-      if (isMobile) {
-        $('#flipbook').on('touchstart touchmove', '.page-wrapper, .page', function (e) {
-          var $target = $(e.target);
+    if (!isMobile) return;
 
-          // Check if the touch is on locationBtn OR its parent <a> tag OR any clickable element
-          var isControl =
-            $target.is('#locationBtn') ||
-            $target.closest('#locationBtn').length > 0 ||
-            $target.closest('a[href]').length > 0 ||
-            $target.is('a[href]');
+    $('#flipbook').on('touchstart touchmove', '.page-wrapper, .page', function (e) {
+      var $target = $(e.target);
 
-          if (isControl) {
-            // Allow the event to pass through naturally — do NOT block it
-            e.stopImmediatePropagation();
-            return true;
-          }
+      // Allow any interactive / overlay element to work freely
+      var isInteractive =
+        $target.is('a, button, img[id], [data-page]') ||
+        $target.closest('a, button, [id], [data-page]').length > 0 ||
+        $target.closest('#mobileTocPopup').length > 0 ||
+        $target.closest('#mobileDotsPopup').length > 0 ||
+        $target.closest('#mobOverlay').length > 0 ||
+        $target.closest('#locationBtn, #phoneBtn, #emailBtn').length > 0 ||
+        $target.closest('#whatsappIconBtn, #instagramBtn, #facebookIconBtn').length > 0 ||
+        $target.closest('#youtubeBtn, #linkedinIconBtn, #websiteBtn').length > 0;
 
-          // Block flip gestures on non-interactive areas
-          if (e.type === 'touchmove') {
-            e.preventDefault();
-          }
-          e.stopPropagation();
-          return false;
-        });
+      if (isInteractive) {
+        e.stopImmediatePropagation();
+        return true; // Let it through
       }
+
+      // Only block swipe/scroll on non-interactive areas
+      if (e.type === 'touchmove') {
+        e.preventDefault();
+      }
+      e.stopPropagation();
+      return false;
     });
-  </script>
+  });
+</script>
   <script>
     /* Fullscreen Hint Logic */
     (function () {

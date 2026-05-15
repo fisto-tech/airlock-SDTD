@@ -135,14 +135,22 @@ document.addEventListener('keydown', function (e) {
 
 
 function updateActiveThumbnail(currentPage) {
-    document.querySelectorAll('.tb-link').forEach(item => {
-        const itemPage = parseInt(item.dataset.page);
+    const allLinks = document.querySelectorAll('.tb-link');
+    
+    // Collect all data-page values and sort descending
+    const pageValues = [];
+    allLinks.forEach(item => {
+        const p = parseInt(item.dataset.page);
+        if (!isNaN(p)) pageValues.push(p);
+    });
+    
+    // Sort descending to find the closest page <= currentPage
+    const sorted = [...new Set(pageValues)].sort((a, b) => b - a);
+    const matchPage = sorted.find(p => p <= currentPage) || sorted[sorted.length - 1];
 
-        // Remove old active
+    allLinks.forEach(item => {
         item.classList.remove('active');
-
-        // Match if the item page equals the current flipbook page
-        if (itemPage === currentPage) {
+        if (parseInt(item.dataset.page) === matchPage) {
             item.classList.add('active');
         }
     });
@@ -181,10 +189,11 @@ $('#flipbook').bind("turned", function(event, page) {
 
 // Run once on page load
 document.addEventListener("DOMContentLoaded", () => {
-    const firstPage = $('#flipbook').turn('page');
-    updateActiveThumbnail(firstPage);
+    setTimeout(() => {
+        const firstPage = $('#flipbook').turn('page') || 1;
+        updateActiveThumbnail(firstPage);
+    }, 300); // Wait for flipbook to initialize
 });
-
 
 
 
@@ -458,31 +467,31 @@ window.addEventListener('load', function () {
 
 
 
-$('#flipbook').bind('turned', function (event, page, view) {
+// $('#flipbook').bind('turned', function (event, page, view) {
 
-  // ✅ UPDATE PAGE COUNTER WITH LAST PAGE FIX
-  const totalPages = $('#flipbook').turn('pages');
-  const pageNoElement = document.getElementById('page-no');
+//   // ✅ UPDATE PAGE COUNTER WITH LAST PAGE FIX
+//   const totalPages = $('#flipbook').turn('pages');
+//   const pageNoElement = document.getElementById('page-no');
   
-  if (pageNoElement) {
-      if (page === 1) {
-          // First page (cover)
-          pageNoElement.textContent = `1 / ${totalPages}`;
-      } else if (page === totalPages) {
-          // Last page (back cover) - show single number
-          pageNoElement.textContent = `${totalPages} / ${totalPages}`;
-      } else if (page % 2 === 0) {
-          // Even page - show as spread
-          pageNoElement.textContent = `${page}-${page + 1} / ${totalPages}`;
-      } else {
-          // Odd page - show as spread
-          pageNoElement.textContent = `${page - 1}-${page} / ${totalPages}`;
-      }
-  }
+//   if (pageNoElement) {
+//       if (page === 1) {
+//           // First page (cover)
+//           pageNoElement.textContent = `1 / ${totalPages}`;
+//       } else if (page === totalPages) {
+//           // Last page (back cover) - show single number
+//           pageNoElement.textContent = `${totalPages} / ${totalPages}`;
+//       } else if (page % 2 === 0) {
+//           // Even page - show as spread
+//           pageNoElement.textContent = `${page}-${page + 1} / ${totalPages}`;
+//       } else {
+//           // Odd page - show as spread
+//           pageNoElement.textContent = `${page - 1}-${page} / ${totalPages}`;
+//       }
+//   }
   
-  // Update active thumbnail (your existing code)
-  updateActiveThumbnail(page);
-});
+//   // Update active thumbnail (your existing code)
+//   updateActiveThumbnail(page);
+// });
 
 
 
@@ -1476,25 +1485,48 @@ function updateArrows(page) {
 
 $('#flipbook').bind('turned', function (event, page, view) {
 
-    updateArrows(page);   // ⬅ ADD THIS HERE (IMPORTANT)
-
-    // (Your existing code)
-    const totalPages = $('#flipbook').turn('pages');
+    // ---- Page counter ----
+    const totalPagesCount = $('#flipbook').turn('pages');
     const pageNoElement = document.getElementById('page-no');
+    const mobPageNo = document.getElementById('mob-page-no');
 
     if (pageNoElement) {
         if (page === 1) {
-            pageNoElement.textContent = `1 / ${totalPages}`;
-        } else if (page === totalPages) {
-            pageNoElement.textContent = `${totalPages} / ${totalPages}`;
+            pageNoElement.textContent = `1 / ${totalPagesCount}`;
+        } else if (page === totalPagesCount) {
+            pageNoElement.textContent = `${totalPagesCount} / ${totalPagesCount}`;
         } else if (page % 2 === 0) {
-            pageNoElement.textContent = `${page}-${page + 1} / ${totalPages}`;
+            pageNoElement.textContent = `${page}-${page + 1} / ${totalPagesCount}`;
         } else {
-            pageNoElement.textContent = `${page - 1}-${page} / ${totalPages}`;
+            pageNoElement.textContent = `${page - 1}-${page} / ${totalPagesCount}`;
         }
     }
 
+    // ---- Mobile page number ----
+    if (mobPageNo) mobPageNo.textContent = page;
+
+    // ---- Thumbnail active state ----
     updateActiveThumbnail(page);
+
+    // ---- Mobile TOC active highlight ----
+    document.querySelectorAll('.mob-tb-link').forEach(function (li) {
+        li.classList.toggle('mob-active', parseInt(li.dataset.page) === page);
+    });
+
+    // ---- Arrows ----
+    updateArrows(page);
+
+    // ---- Autoplay progress sync ----
+    if (!isAutoPlaying && !isDragging) {
+        const idealPageProgress = getProgressFromPage(page);
+        const diff = Math.abs(currentProgress - idealPageProgress);
+        if (diff > (100 / totalPagesCount) / 2) {
+            currentProgress = idealPageProgress;
+            updateProgressBar(currentProgress);
+            pausedTime = (currentProgress / 100) * getDuration();
+            elapsedTime = pausedTime;
+        }
+    }
 });
 
 

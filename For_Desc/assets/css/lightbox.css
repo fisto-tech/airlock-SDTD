@@ -480,30 +480,30 @@ body {
 @media screen and (min-width: 321px) and (max-width:375px) {
   .ui-arrow-next-page {
       position: absolute;
-      top: 470px;
-      right: 150px;
+      top: 450px;
+      right: 100px;
       width: 30px;
       height: 60px;
   }
   .ui-arrow-previous-page {
       position: absolute;
       margin-right: 10px;
-      top: 470px;
+      top: 450px;
       margin-left: 150px;
   }
 }
 @media screen and (min-width: 376px) and (max-width:430px) {
   .ui-arrow-next-page {
       position: absolute;
-      top: 530px;
-      right: 150px;
+      top: 105%;
+      right: 100px;
       width: 30px;
       height: 60px;
   }
   .ui-arrow-previous-page {
       position: absolute;
       margin-right: 10px;
-      top: 530px;
+      top: 105%;
       margin-left: 150px;
   }
 }
