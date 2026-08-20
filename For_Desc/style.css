@@ -2043,3 +2043,61 @@ a[href*="google.com/maps"] {
         transform: rotate(180deg);
     }
 }
+
+
+.back-button {
+  color: #1E1E1E;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+    position: fixed;
+    right: 2%;
+    top: 2%;
+    padding: 0.5vw;
+    z-index: 1005;
+    background-color: #fff;
+    border: none;
+    border-radius: 6px; 
+     
+
+}
+
+.back-button:hover {
+      background-color: #074995;
+      color: #fff;
+}
+
+@media screen and (max-width: 1024px) {
+    .back-button {
+        display: none !important;
+    }
+}
+
+.mob-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background 0.18s;
+}
+
+.mob-back-btn:active {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.mob-back-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    filter: invert(1);
+}
+
+
+
+
+
+
